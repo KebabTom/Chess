@@ -22,6 +22,9 @@ public class OptionsPanel extends JPanel implements ActionListener {
 	private ImageIcon undoIcon;
 	private ImageIcon guideIcon;
 	private ImageIcon noGuideIcon;
+	private ImageIcon noCheckIcon;
+	private ImageIcon checkIcon;
+	private ImageIcon checkmateIcon;
 
 	private JLabel whoseTurnLabel;
 	private JPanel turnColorPanel;
@@ -31,6 +34,8 @@ public class OptionsPanel extends JPanel implements ActionListener {
 	private JButton guideToggleButton;
 	private JComboBox<String> whiteColorBox;
 	private JComboBox<String> blackColorBox;
+	private JPanel checkStatusPanel;
+	private JLabel checkPic;
 
 	private ChessController controller;
 
@@ -42,6 +47,11 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		undoIcon = createImageIcon("Images/undo-icon.png", 40);
 		guideIcon = createImageIcon("Images/guides-icon.png", 40);
 		noGuideIcon = createImageIcon("Images/no-guides-icon.png", 40);
+		noCheckIcon = createImageIcon("Images/noCheck.png", 140);
+		checkIcon = createImageIcon("Images/check.png", 140);
+		checkmateIcon = createImageIcon("Images/checkmate.png", 140);
+
+
 
         this.setPreferredSize(new Dimension(150, 620));
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -92,6 +102,19 @@ public class OptionsPanel extends JPanel implements ActionListener {
         blackColorBox.addActionListener(new comboListener(BLACK, controller));
 
 		this.add(blackColorBox);
+
+		checkStatusPanel = new JPanel();
+		checkStatusPanel.setLayout(new GridBagLayout());
+        checkStatusPanel.setPreferredSize(new Dimension(140,140));
+        checkStatusPanel.setMaximumSize(new Dimension(140,140));
+        checkStatusPanel.setBackground(Color.black);
+
+        checkPic = new JLabel();
+        checkStatusPanel.add(checkPic);
+        checkPic.setIcon(noCheckIcon);
+        this.add(checkStatusPanel, BorderLayout.CENTER);
+
+
 	}
 
 	private JLabel headingLabel(String content) {
@@ -151,6 +174,18 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		} else {
 			guideToggleButton.setIcon(noGuideIcon);
 		}
+	}
+
+	public void displayCheck() {
+		checkPic.setIcon(checkIcon);
+	}
+
+	public void displayCheckmate() {
+		checkPic.setIcon(checkmateIcon);
+	}
+	
+	public void clearCheck() {
+		checkPic.setIcon(noCheckIcon);
 	}
 
 

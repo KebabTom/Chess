@@ -150,12 +150,12 @@ public class ChessController implements Runnable {
 
         if(!sameCoords(moveFrom, moveTo)) {
             if(!checkForValidEndToMove(row, col)) {
-                System.out.println("can't move there");
+                JOptionPane.showMessageDialog(chessBoard, "That piece can't move there");
             } else {
                 try {
                     carryOutMove();
                 } catch (Exception e) {
-                    System.out.println("King would be in check");
+                JOptionPane.showMessageDialog(chessBoard, "Your king would be in check");
                 }
             }
         }
@@ -167,13 +167,20 @@ public class ChessController implements Runnable {
         g.move(moveFrom, moveTo);
         updateBoardDisplayFromGame();
         updateWhoseTurnDisplay();
+        updateCheckDisplay();
+    }
+
+    private void updateCheckDisplay() {
         check = g.checkForCheck();
         checkmate = g.checkForCheckMate();
         if(check) {
-            System.out.println("Check");
             if(checkmate) {
-                System.out.println("checkmate");
+                options.displayCheckmate();
+            } else {
+                options.displayCheck();
             }
+        } else {
+            options.clearCheck();
         }
     }
 
@@ -222,12 +229,13 @@ public class ChessController implements Runnable {
         resetToStartOfTurn();
     }
 
-    // called after game restart/undo. Resets moveStarted flag, updates whose turn display and clears move highlighting
+    // called after game restart/undo. Resets moveStarted flag, updates whose turn/check display and clears move highlighting
     private void resetToStartOfTurn() {
         moveStarted = false;
         chessBoard.clearAllHighlightedTiles();
         updateBoardDisplayFromGame();
         updateWhoseTurnDisplay();
+        updateCheckDisplay();
     }
 
     // updates the color of the indicator in the options panel to reflect the current turn/colours
