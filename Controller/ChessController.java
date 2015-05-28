@@ -9,6 +9,9 @@ import java.util.*;
 import View.*;
 import Model.*;
 
+// The main controller for the chess game.
+// contains a Game object for the model and DisplayBoard, ChessSet and OptionsPanel objects for the view
+
 public class ChessController implements Runnable {
 
 
@@ -58,26 +61,17 @@ public class ChessController implements Runnable {
         return blackTileColor;
     }
 
+    // returns true if move highlighting is currently enabled
     public boolean showingGuides() {
         return highlightMoves;
     }
 
-    public void toggleGuides() {
-        highlightMoves = !highlightMoves;
-        if(!highlightMoves) {
-            chessBoard.clearAllHighlightedTiles();
-        } else {
-            if(moveStarted) {
-                chessBoard.highlightAvailableMoves(availableMoves);
-            }
-        }
-    }
-
+    // set up the window and instantiate all game objects
     private void initialSetup() {
         w.setDefaultCloseOperation(w.EXIT_ON_CLOSE);
         w.setTitle("Chess Time");
 
-        chessBoard = new DisplayBoard(this);
+        chessBoard = new DisplayBoard(this, TILE_SIZE);
         chessSet = new ChessSet(whiteColor, blackColor, TILE_SIZE);
         options = new OptionsPanel(this);
 
@@ -94,7 +88,7 @@ public class ChessController implements Runnable {
         w.setVisible(true);
     }
 
-
+    // refreshes the contents of the dispay board from the game board in the model
     private void updateBoardDisplayFromGame() {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
@@ -109,7 +103,7 @@ public class ChessController implements Runnable {
         }
     }
 
-
+    // returns true if the space at the passed row and column contains a piece of the correct colour
     private boolean checkForValidStartToMove(int row, int col) {
         if(g.spaceOccupied(row, col) && g.getColorInSpace(row, col) == g.whoseMove()) {
             return true;
@@ -117,7 +111,8 @@ public class ChessController implements Runnable {
         return false;
     }
 
-
+    // sets the moveStarted flag and retrieves the available moves for the piece at the passed row and column
+    // marks the clicked square and highlights the available moves if enabled
     private void startMove(int row, int col) {
         moveStarted = true;
         moveFrom[0] = row;
@@ -129,7 +124,7 @@ public class ChessController implements Runnable {
         }
     }
 
-
+    // returns true if the passed row and column are in the list of current available moves
     private boolean checkForValidEndToMove(int row, int col) {
         Iterator itr = availableMoves.iterator();
         while(itr.hasNext()) {
@@ -141,6 +136,8 @@ public class ChessController implements Runnable {
         return false;
     }
 
+    // called when a 'move to' square is clicked.
+    // clears all highlighting and resets the moveStarted flag, then tries to move the pieces (if not clicked back on same square)
     private void endMove(int row, int col) {
         moveStarted = false;
         moveTo[0] = row;
@@ -155,14 +152,13 @@ public class ChessController implements Runnable {
                 try {
                     carryOutMove();
                 } catch (Exception e) {
-                JOptionPane.showMessageDialog(chessBoard, "Your king would be in check");
+                    JOptionPane.showMessageDialog(chessBoard, "Your king would be in check");
                 }
             }
         }
-
     }
 
-    // switches the pieces in the game model, updates the board display and carries out check & checkmate checks
+    // switches the pieces in the game model, updates the board and options display and carries out check & checkmate checks
     private void carryOutMove() throws Exception {
         g.move(moveFrom, moveTo);
         updateBoardDisplayFromGame();
@@ -170,6 +166,7 @@ public class ChessController implements Runnable {
         updateCheckDisplay();
     }
 
+    // sets the display in the option panel depending on the current check status
     private void updateCheckDisplay() {
         check = g.checkForCheck();
         checkmate = g.checkForCheckMate();
@@ -185,6 +182,7 @@ public class ChessController implements Runnable {
     }
 
     // called by each Tile's MouseListener object with the row and column values of that tile.
+    // used for starting and ending moves
     public void processTileClick(int row, int col) {
         if(!moveStarted) {
             if(checkForValidStartToMove(row, col)) {
@@ -205,6 +203,7 @@ public class ChessController implements Runnable {
         }
     }
 
+    // updates the chess piece images and board tile colours of the specified team to match the specified colour
     public void updateChessSetColors(boolean colorToUpdate, String newColor) {
         chessSet.updatePieceColors(colorToUpdate, newColor);
         if(colorToUpdate == WHITE) {
@@ -216,6 +215,9 @@ public class ChessController implements Runnable {
         chessBoard.updateTileColors(whiteTileColor, blackTileColor);
         updateBoardDisplayFromGame();
         updateWhoseTurnDisplay();
+        if(highlightMoves && moveStarted) {
+            chessBoard.highlightAvailableMoves(availableMoves);
+        }
 
     }
 
@@ -238,12 +240,24 @@ public class ChessController implements Runnable {
         updateCheckDisplay();
     }
 
-    // updates the color of the indicator in the options panel to reflect the current turn/colours
+    // updates the colour of the indicator in the options panel to reflect the current turn/colours
     private void updateWhoseTurnDisplay() {
         if(g.whoseMove() == WHITE) {
             options.updateTurnColorPanel(whiteTileColor);
         } else {
             options.updateTurnColorPanel(blackTileColor);
+        }
+    }
+
+    // switches tile highlighting on and off and updates the highlighted tiles if necessary
+    public void toggleGuides() {
+        highlightMoves = !highlightMoves;
+        if(!highlightMoves) {
+            chessBoard.clearAllHighlightedTiles();
+        } else {
+            if(moveStarted) {
+                chessBoard.highlightAvailableMoves(availableMoves);
+            }
         }
     }
 }

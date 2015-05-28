@@ -12,15 +12,17 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSourceListener;
 import Controller.*;
 
+// the display for each tile on the chess board
+// instantiated with a reference to the ChessController in order to process listener events
+
 public class Tile extends JPanel {
 
 	// constants
-	private Integer TILE_SIZE = 80;
+	private Integer TILE_SIZE;
 	private Integer BORDER_SIZE = 3;
 	private boolean WHITE = true;
 	private boolean BLACK = false;
 	private Integer row, col;
-
 
 	private MouseListener listener;
 	private Color tileColor;
@@ -39,8 +41,9 @@ public class Tile extends JPanel {
 
 	// set the row and column values and iniial background and border colours
 	// also sets up the mouse listener to pass requests back to the ChessController
-	public Tile(ChessController c, Color bgColor, int startRow, int startCol) {
+	public Tile(ChessController c, Color bgColor, int startRow, int startCol, int tileSize) {
 
+		TILE_SIZE = tileSize;
 		row = startRow;
 		col = startCol;
 		listener = new TileMouseListener(c, this);

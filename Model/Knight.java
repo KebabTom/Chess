@@ -12,10 +12,7 @@ class Knight extends Piece {
 		setCol(col);
 	}
 
-	public void printPiece() {
-		System.out.print("H");
-	}
-
+	// checks all 8 possible positions the knight can move to
 	public ArrayList<Integer[]> getMovesAndThreats(Game g, boolean includeThreats) {
 
 		ArrayList<Integer[]> moves = new ArrayList<Integer[]>();

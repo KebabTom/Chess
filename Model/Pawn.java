@@ -16,16 +16,13 @@ class Pawn extends Piece {
 		setCol(col);
 	}
 
-	public void printPiece() {
-		System.out.print("P");
-	}
-
 	// adds pawn moves based on current position, colour and surrounding enemies
 	public ArrayList<Integer[]> getMovesAndThreats(Game g, boolean includeThreats) {
 
 		if (includeThreats) {
 			return getPawnThreats(g);
 		}
+		
 		ArrayList<Integer[]> moves = new ArrayList<Integer[]>();
 
 		if(getColor() == WHITE && getRow() == 6 || getColor() == BLACK && getRow() == 1) {

@@ -12,10 +12,6 @@ class Rook extends Piece {
 		setCol(col);
 	}
 
-	public void printPiece() {
-		System.out.print("R");
-	}
-
 	public ArrayList<Integer[]> getMovesAndThreats(Game g, boolean includeThreats) {
 
 		ArrayList<Integer[]> moves = new ArrayList<Integer[]>();

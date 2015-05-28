@@ -9,7 +9,4 @@ class BlankSquare extends Piece {
 		setName("BlankSquare");
 	}
 
-	public void printPiece() {
-		System.out.print("O");
-	}
 }

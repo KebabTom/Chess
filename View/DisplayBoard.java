@@ -14,6 +14,7 @@ An 8*8 Gridlayout JPanel, filled with Tile objects to graphically represent the 
 
 public class DisplayBoard extends JPanel {
 
+    private int TILE_SIZE;
 	private boolean WHITE = true;
 	private boolean BLACK = false;
 
@@ -22,9 +23,10 @@ public class DisplayBoard extends JPanel {
 	private Tile[][] board = new Tile[8][8];
 	private GridLayout chessGrid = new GridLayout(8,8);
 
-    public DisplayBoard(ChessController c) {
+    public DisplayBoard(ChessController c, int tileSize) {
 
     	controller = c;
+        TILE_SIZE = tileSize;
     	initialSetup();
     }
 
@@ -40,9 +42,9 @@ public class DisplayBoard extends JPanel {
     	for(int i = 0; i < 8; i++) {
     		for(int j = 0; j < 8; j++) {
                 if(color == WHITE) {
-                    board[i][j] = new Tile(controller, whiteTileColor, i, j);
+                    board[i][j] = new Tile(controller, whiteTileColor, i, j, TILE_SIZE);
                 } else {
-                    board[i][j] = new Tile(controller, blackTileColor, i, j);
+                    board[i][j] = new Tile(controller, blackTileColor, i, j, TILE_SIZE);
                 }
     			this.add(board[i][j]);
     			color = !color;

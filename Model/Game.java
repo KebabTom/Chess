@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 import java.util.Stack.*;
 
+// the principal class of the chess model.
+// contains a 2D array of Piece objects to represent the game pieces, and moves them around to update the game state
+
 public class Game {
 
 	private boolean WHITE = true;
@@ -19,17 +22,14 @@ public class Game {
 	private Piece[][] board;
 	private Stack<Piece[][]> boardStack = new Stack<Piece[][]>();
 
-
-	public static void main(String[] args) {
-        Game testGame = new Game();
-        testGame.testing();
-    }
-
-
 	public Game() {
 		board = new Piece[8][8];
 		setUpGame();
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// Setup methods
+	////////////////////////////////////////////////////////////////////////////////////////////
 
 	private void setUpGame() {
 		addPieces();
@@ -73,74 +73,9 @@ public class Game {
 		}
 	}
 
-	public void printBoard() {
-		for(int i = 0; i < BOARD_HEIGHT; i++) {
-			for(int j = 0; j < BOARD_WIDTH; j++) {
-				board[i][j].printPiece();
-			}
-			System.out.print("\n");
-		}
-	}
-
-	public void printBoardWithMoves(ArrayList<Integer[]> moves) {
-		for(int i = 0; i < BOARD_HEIGHT; i++) {
-			for(int j = 0; j < BOARD_WIDTH; j++) {
-				boolean foundMove = false;
-				Iterator itr = moves.iterator();
-				while(itr.hasNext() && !foundMove) {
-					Integer[] coords = (Integer[]) itr.next();
-					if(coords[0] == i && coords[1] == j) {
-						foundMove = true;
-					}
-				}
-				if(foundMove) {
-					System.out.print("X");
-				} else {
-					board[i][j].printPiece();
-				}
-			}
-			System.out.print("\n");
-		}
-
-	}
-
-	public void testing() {
-		board[4][3] = new Queen(BLACK, 4, 3);
-		board[6][3] = new BlankSquare();
-		board[5][3] = new Queen(BLACK, 5, 3);
-		board[7][2] = new BlankSquare();
-		board[7][1] = new BlankSquare();
-		board[6][2] = new BlankSquare();
-
-
-		printBoard();
-
-		ArrayList<Integer[]> moves = board[7][3].getAvailableMoves(this);
-		System.out.print("\n");
-		printBoardWithMoves(moves);
-
-		try {
-			move(new Integer[] {6,4}, new Integer[] {4,4});
-		} catch (Exception err) {
-			System.out.println("Can't go there");
-		}
-
-		System.out.print("\n");
-		printBoard();
-
-		board[0][4] = new Rook(WHITE, 0, 4);
-		board[0][5] = new Rook(WHITE, 0, 5);
-		System.out.print("\n");
-		System.out.println("Should be in checkmate:");
-		printBoard();
-		if(checkForCheck()) {
-			System.out.println("Is in check");
-		}
-		if(checkForCheckMate()) {
-			System.out.println("Is in checkmate");
-		}
-		
-	}
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Game information returning methods
+	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean outOfBounds(int r, int c) {
 		if(r < 0 || c < 0 || r > 7 || c > 7) {
@@ -166,6 +101,10 @@ public class Game {
 
 	public boolean whoseMove() {
 		return whoseMove;
+	}
+
+	private boolean getOppositeColor(boolean color) {
+		return !color;
 	}
 
 	public ArrayList<Integer[]> getAvailableMoves(int row, int col) {
@@ -227,6 +166,10 @@ public class Game {
 		return false;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Game state altering methods (moves)
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	// moves a piece from one position to another.
 	// if move is legal, adds the last board position to the boardStack
 	// if move is illegal (results in own king going into check) throws IOException and leaves the board unchanged
@@ -262,7 +205,7 @@ public class Game {
 	}
 
 
-	// move the piece to the required location, update its row and column attributes and add a new BlankSquare where it was.
+	// move the piece to the required location, update its row and column attributes and adds a new BlankSquare where it was.
 	// if the piece is a king, also moves rook if castling
 	// if the piece is a pawn, switches it to a queen if it is on the last row
 	public void makeMove(int rowTo, int colTo, int rowFrom, int colFrom) {
@@ -315,9 +258,10 @@ public class Game {
 		whoseMove = getOppositeColor(whoseMove);
 	}
 
-	private boolean getOppositeColor(boolean color) {
-		return !color;
-	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Check/checkmate calculating methods
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// returns true if the player who's turn it is is in check
 	// i.e. their king is threatened
@@ -389,6 +333,11 @@ public class Game {
 		return false;
 	}
 
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// Internal methods
+	////////////////////////////////////////////////////////////////////////////////////////////
+	
 	// returns true if the two integer arrays contain the same two elements in the same order
 	private boolean sameCoords(Integer[] coordA, Integer[] coordB) {
 		if(coordA.length != 2 || coordB.length != 2) {

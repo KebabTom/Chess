@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import View.*;
 
+// used to highlight tiles when hovered and process user clicks on each Tile
+
 public class TileMouseListener extends MouseAdapter {
 
 	private Tile tile;

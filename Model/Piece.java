@@ -3,6 +3,9 @@ package Model;
 import java.io.*;
 import java.util.*;
 
+// parent class for all pieces.
+// all subclasses (except BlankSquare) contain their own getMovesAndThreats() methods to override the method in this class
+
 class Piece {
 	private boolean WHITE = true;
 	private boolean BLACK = false;
@@ -45,12 +48,6 @@ class Piece {
 		return col;
 	}
 
-
-
-	public void printPiece() {
-		System.out.println("Print Inheritance failed");
-	}
-
 	// wrapper for getMovesAndThreats. Used when moving a player's pieces
 	public ArrayList<Integer[]> getAvailableMoves(Game g) {
 		return getMovesAndThreats(g, false);
@@ -64,12 +61,17 @@ class Piece {
 	// prototype for individual function for each piece.
 	// If includeThreats is true, returns ArrayList of coordinates of all spaces on the board that the piece currently threatens
 	// If includeThreats is false, returns ArrayList of coordinates of all spaces on the board that the piece can move to
+	// Returns empty array list is called on blank space
 	public ArrayList<Integer[]> getMovesAndThreats(Game g, boolean includeThreats) {
 		return new ArrayList<Integer[]>();
 	}
 
+	//////////////////////////////////////////////////////////////
+	/* General move methods (Applied to more than one piece) */
+	//////////////////////////////////////////////////////////////
 
 	// checks a space on the board to see if a piece can move there. If it can, it is added to the coords ArrayList
+	// return value used for straight line pieces (Rook, Queen, Bishop) to determine whether to keep looking for moves
 	// returns false if the piece definitely can't make any moves past this space. Returns true if more moves are possible.
 	public boolean checkSpace(ArrayList<Integer[]> coords, Game g, int r, int c, boolean includeThreats) {
 
@@ -84,7 +86,7 @@ class Piece {
 
 		if(g.getColorInSpace(r, c) != this.getColor()) {
 			coords.add(new Integer[] {r, c});
-			// if looking for threats, keep looking past the enemy king
+			// if looking for threats, keep looking past the enemy king (Used when calculating where the king can move)
 			if(includeThreats && g.whatPieceInSpace(r,c).equals("King")) {
 				return true;
 			}
